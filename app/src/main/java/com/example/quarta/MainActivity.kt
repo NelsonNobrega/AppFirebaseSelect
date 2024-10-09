@@ -177,39 +177,42 @@ fun App( db: FirebaseFirestore) {
                 Text(text = "Telefone:")
             }
         }
-        Row(
+       }
+        Row (
             Modifier
-                .fillMaxWidth(),
-        ) {
-            val clientes = mutableStateListOf<HashMap<String, String>>()
-            db.collection("Clientes")
-                .get()
-                .addOnSuccessListener { documents ->
-                    for (document in documents) {
-                        val lista = hashMapOf(
-                            "nome" to "${document.data.get("nome")}",
-                            "telefone" to "${document.data.get("telefone")}",
-                        )
-                        clientes.add(lista)
-                        Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                    }
-                }
-                .addOnFailureListener { exception ->
-                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
-                }
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(clientes) { cliente ->
-                    Row(modifier = Modifier.fillMaxSize()) {
-                        Column(modifier = Modifier.weight(0.5f)) {
-                            Text(text = cliente["nome"] ?: "---")
+                .fillMaxWidth()
+        ){
+            Column(
+
+            ) {
+                val clientes = mutableStateListOf<HashMap<String, String>>()
+                db.collection("Clientes")
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for(document in documents){
+                            val lista = hashMapOf(
+                                "nome" to "${document.data.get("nome")}",
+                                "telefone" to "${document.data.get("telefone")}"
+                            )
+                            clientes.add(lista)
                         }
-                        Column(modifier = Modifier.weight(0.5f)) {
-                            Text(text = cliente["telefone"] ?: "---")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error getting documents: ", exception)
+                    }
+                LazyColumn(modifier = Modifier.fillMaxWidth()){
+                    items(clientes) { cliente ->
+                        Row(modifier = Modifier.fillMaxWidth()){
+                            Column (modifier = Modifier.weight(0.5f)){
+                                Text(text = cliente["nome"] ?: "--")
+                            }
+                            Column (modifier = Modifier.weight(0.5f)){
+                                Text(text = cliente["telefone"] ?: "--")
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 }
